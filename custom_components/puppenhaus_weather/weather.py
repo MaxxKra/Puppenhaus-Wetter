@@ -1,5 +1,5 @@
 from datetime import timedelta
-from homeassistant.components.weather import WeatherEntity
+from homeassistant.components.weather import WeatherEntity, WeatherEntityFeature
 from homeassistant.const import (
     UnitOfTemperature,
     UnitOfSpeed,
@@ -7,7 +7,7 @@ from homeassistant.const import (
     UnitOfLength,
     PERCENTAGE,
 )
-from homeassistant.util.dt import now as ha_now
+from homeassistant.util.dt import now as ha_now, DEFAULT_TIME_ZONE
 
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
@@ -23,7 +23,8 @@ class PuppenhausWeather(WeatherEntity):
     _attr_humidity_unit = PERCENTAGE
     _attr_pressure_unit = UnitOfPressure.HPA
     _attr_visibility_unit = UnitOfLength.KILOMETERS
-    _attr_precipitation_unit = "mm"  # Als Text, da kein Enum
+    _attr_precipitation_unit = "mm"
+    _attr_supported_features = WeatherEntityFeature.FORECAST_HOURLY
 
     def __init__(self, hass):
         self.hass = hass
@@ -57,15 +58,15 @@ class PuppenhausWeather(WeatherEntity):
 
     @property
     def wind_bearing(self):
-        return 180.0  # Optional: z. B. aus Drehregler
+        return 180.0  # statischer Wert oder später steuerbar
 
     @property
     def pressure(self):
-        return 1013  # Optional statisch
+        return 1013  # statischer Beispielwert
 
     @property
     def visibility(self):
-        return 10  # Sichtweite in km
+        return 10  # Beispielwert in km
 
     @property
     def feels_like(self):
@@ -90,32 +91,22 @@ class PuppenhausWeather(WeatherEntity):
             else:
                 return "sunny" if self._is_day() else "clear-night"
 
-    @property
-    def forecast(self):
-        now = ha_now()
-        return [
-            {
-                "datetime": (now + timedelta(hours=3)).isoformat(),
-                "temperature": 24,
-                "condition": "partlycloudy",
-                "precipitation": 0.0,
-                "wind_speed": 10.0,
-                "wind_bearing": 180
-            },
-            {
-                "datetime": (now + timedelta(hours=6)).isoformat(),
-                "temperature": 20,
-                "condition": "rainy",
-                "precipitation": 1.2,
-                "wind_speed": 12.0,
-                "wind_bearing": 190
-            },
-            {
-                "datetime": (now + timedelta(hours=9)).isoformat(),
-                "temperature": 17,
-                "condition": "cloudy",
-                "precipitation": 0.3,
-                "wind_speed": 8.0,
-                "wind_bearing": 200
-            },
-        ]
+    async def async_forecast_hourly(self) -> list[dict] | None:
+        now = ha_now().astimezone(DEFAULT_TIME_ZONE)
+        forecast = []
+        for i in range(3):
+            forecast.append({
+                "datetime": (now + timedelta(hours=(i + 1))).isoformat(),
+                "condition": "partlycloudy" if i == 0 else "rainy" if i == 1 else "cloudy",
+                "native_temperature": 24 - i * 2,
+                "native_apparent_temperature": 23.5 - i,
+                "native_wind_speed": 10 + i * 2,
+                "native_pressure": 1013,
+                "humidity": 60 + i * 5,
+                "cloud_coverage": 30 + i * 20,
+                "precipitation_probability": 20 + i * 10,
+                "native_precipitation": 0.1 * i,
+                "wind_bearing": 180 + i * 10,
+                "uv_index": 3.0 - i
+            })
+        return forecast
