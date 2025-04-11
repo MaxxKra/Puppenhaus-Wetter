@@ -1,0 +1,8 @@
+{
+  "name": "Puppenhaus Wetter",
+  "content_in_root": false,
+  "domain": "puppenhaus_weather",
+  "documentation": "https://github.com/MaxxKra/Puppenhaus-Wetter",
+  "homeassistant": "2023.0.0",
+  "render_readme": true
+}
