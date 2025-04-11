@@ -1,22 +1,11 @@
 from homeassistant.components.weather import (
     WeatherEntity,
     WeatherEntityFeature,
-    ATTR_FORECAST_CONDITION,
-    ATTR_FORECAST_TEMP
 )
 from homeassistant.const import TEMP_CELSIUS, SPEED_KILOMETERS_PER_HOUR, PERCENTAGE
 
-CONDITION_MAP = {
-    "sunny": "sunny",
-    "cloudy": "cloudy",
-    "partlycloudy": "partlycloudy",
-    "rainy": "rainy",
-    "lightning": "lightning",
-    "snowy": "snowy"
-}
-
-async def async_setup_entry(hass, config_entry, async_add_entities):
-    async_add_entities([PuppenhausWeather(hass)], True)
+async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+    async_add_entities([PuppenhausWeather(hass)])
 
 class PuppenhausWeather(WeatherEntity):
     _attr_name = "Puppenhaus Wetter"
@@ -64,4 +53,4 @@ class PuppenhausWeather(WeatherEntity):
 
     @property
     def forecast(self):
-        return []  # keine Forecast-Daten in dieser Version
+        return []
