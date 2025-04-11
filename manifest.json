@@ -1,9 +1,0 @@
-{
-  "domain": "puppenhaus_weather",
-  "name": "Puppenhaus Wetter",
-  "version": "1.0.0",
-  "documentation": "https://github.com/MaxxKra/Puppenhaus-Wetter",
-  "dependencies": [],
-  "codeowners": ["@MaxxKra"],
-  "requirements": []
-}
