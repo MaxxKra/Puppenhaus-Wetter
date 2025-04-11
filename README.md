@@ -37,10 +37,10 @@ Willkommen zur offiziellen Integration **"Puppenhaus Wetter"**, einer voll simul
 2. Inhalt in deinen Ordner `custom_components/puppenhaus_weather/` kopieren  
 3. In deiner `configuration.yaml` hinzufügen:
 
-\`\`\`yaml
+```yaml
 weather:
   - platform: puppenhaus_weather
-\`\`\`
+```
 
 4. Home Assistant neustarten
 
@@ -50,10 +50,10 @@ weather:
 
 Du kannst die Entität direkt in einer `weather-forecast` Karte verwenden:
 
-\`\`\`yaml
+```yaml
 type: weather-forecast
 entity: weather.puppenhaus_wetter
-\`\`\`
+```
 
 ![Lovelace Vorschau](https://github.com/MaxxKra/Puppenhaus-Wetter/raw/main/images/weather_card.png)
 
