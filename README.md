@@ -92,7 +92,7 @@ Pull Requests & Issues willkommen!
 ---
 
 ## 🧡 Unterstützt durch:  
-[Smart Home Bastler – YouTube & Tools](https://smarthomebastler.de)
+[Smart Home Bastler – YouTube & Tools](https://smarthomebastler.github.io)
 
 ---
 
