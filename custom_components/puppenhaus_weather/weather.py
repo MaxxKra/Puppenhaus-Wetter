@@ -8,7 +8,7 @@ from homeassistant.const import (
     PERCENTAGE,
 )
 from homeassistant.util.dt import now as ha_now, DEFAULT_TIME_ZONE
-
+from random import uniform
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
     """Set up the Puppenhaus Weather platform."""
@@ -24,7 +24,7 @@ class PuppenhausWeather(WeatherEntity):
     _attr_pressure_unit = UnitOfPressure.HPA
     _attr_visibility_unit = UnitOfLength.KILOMETERS
     _attr_precipitation_unit = "mm"
-    _attr_supported_features = WeatherEntityFeature.FORECAST_HOURLY
+    _attr_supported_features = WeatherEntityFeature.FORECAST_DAILY
 
     def __init__(self, hass):
         self.hass = hass
@@ -45,7 +45,7 @@ class PuppenhausWeather(WeatherEntity):
         return sun > 0
 
     @property
-    def temperature(self):
+    def native_temperature(self):
         return self._get_state("sensor.umwelttableau_aussentemperatur")
 
     @property
@@ -91,22 +91,51 @@ class PuppenhausWeather(WeatherEntity):
             else:
                 return "sunny" if self._is_day() else "clear-night"
 
-    async def async_forecast_hourly(self) -> list[dict] | None:
+    async def async_forecast_daily(self) -> list[dict] | None:
         now = ha_now().astimezone(DEFAULT_TIME_ZONE)
-        forecast = []
-        for i in range(3):
-            forecast.append({
-                "datetime": (now + timedelta(hours=(i + 1))).isoformat(),
-                "condition": "partlycloudy" if i == 0 else "rainy" if i == 1 else "cloudy",
-                "native_temperature": 24 - i * 2,
-                "native_apparent_temperature": 23.5 - i,
-                "native_wind_speed": 10 + i * 2,
-                "native_pressure": 1013,
-                "humidity": 60 + i * 5,
-                "cloud_coverage": 30 + i * 20,
-                "precipitation_probability": 20 + i * 10,
-                "native_precipitation": 0.1 * i,
-                "wind_bearing": 180 + i * 10,
-                "uv_index": 3.0 - i
-            })
+        base_temp = self.native_temperature
+
+        forecast = [
+            {
+                "datetime": (now + timedelta(days=0)).isoformat(),
+                "condition": "sunny",
+                "native_temperature": base_temp + 6,
+                "native_templow": base_temp + 2,
+                "precipitation_probability": 0,
+                "native_precipitation": 0.0
+            },
+            {
+                "datetime": (now + timedelta(days=1)).isoformat(),
+                "condition": "partlycloudy",
+                "native_temperature": base_temp,
+                "native_templow": base_temp - 2,
+                "precipitation_probability": 10,
+                "native_precipitation": 0.1
+            },
+            {
+                "datetime": (now + timedelta(days=2)).isoformat(),
+                "condition": "cloudy",
+                "native_temperature": base_temp - 3,
+                "native_templow": base_temp - 5,
+                "precipitation_probability": 20,
+                "native_precipitation": 0.3
+            },
+            {
+                "datetime": (now + timedelta(days=3)).isoformat(),
+                "condition": "snowy" if base_temp - 6 < 0 else "rainy",
+                "native_temperature": base_temp - 6,
+                "native_templow": base_temp - 8,
+                "precipitation_probability": 80,
+                "native_precipitation": 2.5
+            },
+            {
+                "datetime": (now + timedelta(days=4)).isoformat(),
+                "condition": "partlycloudy",
+                "native_temperature": base_temp - 1,
+                "native_templow": base_temp - 3,
+                "precipitation_probability": 30,
+                "native_precipitation": 0.4
+            }
+        ]
         return forecast
+
