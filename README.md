@@ -55,7 +55,7 @@ type: weather-forecast
 entity: weather.puppenhaus_wetter
 ```
 
-![Lovelace Vorschau](https://github.com/MaxxKra/Puppenhaus-Wetter/raw/main/images/weather_card.png)
+![Lovelace Vorschau](images/weather_card.png)
 
 ---
 
