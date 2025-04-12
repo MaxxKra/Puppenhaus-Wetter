@@ -3,7 +3,7 @@
 
 Willkommen zur offiziellen Integration **"Puppenhaus Wetter"**, einer voll simulierten `weather`-Entität für dein Home Assistant Dashboard – perfekt für Miniaturwelten, Smarthome-Demoboards oder kreative Projekte wie das **Smarthome Puppenhaus**! 🏡✨
 
-![Puppenhaus Wetter in Aktion](https://github.com/MaxxKra/Puppenhaus-Wetter/raw/main/images/dashboard_example.png)
+![Puppenhaus Wetter in Aktion](/../main/images/dashboard_example.png)
 
 ---
 
